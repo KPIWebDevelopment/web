@@ -8,7 +8,7 @@ import { User, AuthResponse } from '../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/auth';
+  private apiUrl = 'http://localhost:80/auth';
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
   private tokenKey = 'auth_token';
@@ -38,7 +38,7 @@ export class AuthService {
       { responseType: 'text' }
     ).pipe(
       switchMap(token =>
-        this.http.get<User>(`http://localhost:8080/email/${email}`, {
+        this.http.get<User>(`http://localhost:80/email/${email}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }).pipe(
           tap(user => this.storeUserData(user, token)),
