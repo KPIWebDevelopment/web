@@ -44,10 +44,20 @@ export class PostDetailComponent implements OnInit {
       return;
     }
 
-    this.postService.getPostById(postId)
+    this.postService.getPosts()
       .subscribe(
-        post => {
-          this.post = post;
+        posts => {
+          const foundPost = posts.find(post => post.id === postId);
+          if (foundPost) {
+            this.post = foundPost;
+          } else {
+            // Post not found in the list
+            if (this.authService.isLoggedIn()) {
+              this.error = 'Post not found';
+            } else {
+              this.error = ''; // Clear any existing error
+            }
+          }
           this.loading = false;
         },
         error => {

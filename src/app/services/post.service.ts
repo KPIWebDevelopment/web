@@ -28,20 +28,8 @@ export class PostService {
     return this.http.get<Post[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  getPostById(id: string): Observable<Post> {
-    return this.http.get<Post>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
-  }
-
   createPost(post: Post): Observable<Post> {
     return this.http.post<Post>(this.apiUrl, post, { headers: this.getHeaders() });
-  }
-
-  updatePost(id: string, post: Post): Observable<Post> {
-    return this.http.put<Post>(`${this.apiUrl}/${id}`, post, { headers: this.getHeaders() });
-  }
-
-  deletePost(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
   likePost(postId: string): Observable<any> {
