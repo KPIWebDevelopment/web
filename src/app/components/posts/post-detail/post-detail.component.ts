@@ -50,6 +50,7 @@ export class PostDetailComponent implements OnInit {
           const foundPost = posts.find(post => post.id === postId);
           if (foundPost) {
             this.post = foundPost;
+            this.post.imageUrl = 'https://iasa-bucket.s3.eu-north-1.amazonaws.com/post-images/' + this.post.id;
           } else {
             // Post not found in the list
             if (this.authService.isLoggedIn()) {

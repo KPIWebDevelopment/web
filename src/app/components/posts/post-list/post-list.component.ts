@@ -30,6 +30,9 @@ export class PostListComponent implements OnInit {
       .subscribe(
         posts => {
           this.posts = posts;
+          this.posts.forEach(
+            post => post.imageUrl = 'https://iasa-bucket.s3.eu-north-1.amazonaws.com/post-images/' + post.id
+          );
           this.loading = false;
         },
         error => {
