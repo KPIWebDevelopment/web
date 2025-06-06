@@ -21,9 +21,7 @@ export class CreatePostComponent implements OnInit {
     private router: Router,
     private postService: PostService,
     private authService: AuthService
-  ) {
-    // Auth check is now handled by AuthGuard
-  }
+  ) {}
 
   ngOnInit() {
     this.postForm = this.formBuilder.group({
@@ -58,29 +56,28 @@ export class CreatePostComponent implements OnInit {
 
     this.loading = true;
 
+    const userId = this.authService.currentUserValue.id;
+    const postPayload = {
+      userId: userId,
+      text: this.f.content.value
+    };
+
     const formData = new FormData();
-    formData.append('title', this.f.title.value);
-    formData.append('content', this.f.content.value);
+    formData.append('post', new Blob([JSON.stringify(postPayload)], { type: 'application/json' }));
+
     if (this.f.image.value) {
       formData.append('image', this.f.image.value);
     }
 
-    const post = {
-      title: this.f.title.value,
-      content: this.f.content.value,
-      imageUrl: this.imagePreview ? this.imagePreview.toString() : null,
-      userId: this.authService.currentUserValue ? this.authService.currentUserValue.id : null
-    };
-
-    this.postService.createPost(post)
-      .subscribe(
-        data => {
-          this.router.navigate(['/posts']);
-        },
-        error => {
-          this.error = error.error.message || 'Failed to create post';
-          this.loading = false;
-        });
+    this.postService.createPost(formData).subscribe({
+      next: () => {
+        this.router.navigate(['/posts']);
+      },
+      error: error => {
+        this.error = error.error.message || 'Failed to create post';
+        this.loading = false;
+      }
+    });
   }
 
   cancelCreate() {

@@ -28,8 +28,13 @@ export class PostService {
     return this.http.get<Post[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
-  createPost(post: Post): Observable<Post> {
-    return this.http.post<Post>(this.apiUrl, post, { headers: this.getHeaders() });
+  createPost(formData: FormData): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post(this.apiUrl, formData, { headers });
   }
 
   likePost(postId: string): Observable<any> {
