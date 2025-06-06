@@ -1,0 +1,89 @@
+<div class="post-detail-container">
+  <div class="back-button">
+    <button class="btn btn-link" (click)="goBack()">
+      ← Back to Posts
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="post && !loading" class="post-content">
+    <div class="post-header">
+      <h1 class="post-title">{{ post.title }}</h1>
+      <div class="post-meta">
+        <span class="post-author">By {{ post.username }}</span>
+        <span class="post-date">{{ post.createdAt | date:'medium' }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="post.imageUrl" class="post-image">
+      <img [src]="post.imageUrl" alt="{{ post.title }}">
+    </div>
+
+    <div class="post-body">
+      <p>{{ post.content }}</p>
+    </div>
+
+    <div class="post-actions">
+      <button class="btn btn-like" [class.liked]="post.liked" (click)="likePost()">
+        ❤️
+        {{ post.likes || 0 }} Likes
+      </button>
+    </div>
+
+    <div class="comments-section">
+      <h3>Comments ({{ post.comments?.length || 0 }})</h3>
+
+      <div *ngIf="isLoggedIn" class="comment-form">
+        <form [formGroup]="commentForm" (ngSubmit)="addComment()">
+          <div class="form-group">
+            <textarea
+              formControlName="content"
+              class="form-control"
+              placeholder="Write a comment..."
+              [ngClass]="{ 'is-invalid': commentForm.get('content').invalid && commentForm.get('content').touched }"
+            ></textarea>
+            <div *ngIf="commentForm.get('content').invalid && commentForm.get('content').touched" class="invalid-feedback">
+              <div *ngIf="commentForm.get('content').errors?.required">Comment cannot be empty</div>
+              <div *ngIf="commentForm.get('content').errors?.minlength">Comment must be at least 3 characters</div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" [disabled]="commentForm.invalid || submittingComment">
+            <span *ngIf="submittingComment" class="spinner-border spinner-border-sm mr-1"></span>
+            Post Comment
+          </button>
+        </form>
+      </div>
+
+      <div *ngIf="!isLoggedIn" class="login-prompt">
+        <p>Please <a routerLink="/login">login</a> to leave a comment.</p>
+      </div>
+
+      <div class="comments-list">
+        <div *ngIf="post.comments && post.comments.length > 0">
+          <div *ngFor="let comment of post.comments" class="comment">
+            <div class="comment-header">
+              <span class="comment-author">{{ comment.username }}</span>
+              <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+            </div>
+            <div class="comment-body">
+              <p>{{ comment.content }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!post.comments || post.comments.length === 0" class="no-comments">
+          <p>No comments yet. Be the first to comment!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

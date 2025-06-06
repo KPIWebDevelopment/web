@@ -1,0 +1,50 @@
+<div class="post-list-container">
+  <div class="header">
+    <h1>Travel Posts</h1>
+    <button *ngIf="isLoggedIn" class="btn btn-primary create-btn" (click)="createPost()">
+      + Create Post
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && posts.length === 0" class="no-posts">
+    <p>No posts available. Be the first to share your travel experience!</p>
+    <button *ngIf="isLoggedIn" class="btn btn-primary" (click)="createPost()">Create Post</button>
+    <a *ngIf="!isLoggedIn" routerLink="/login" class="btn btn-primary">Login to Create Post</a>
+  </div>
+
+  <div class="post-grid">
+    <div *ngFor="let post of posts" class="post-card" (click)="viewPost(post.id)">
+      <div class="post-image" *ngIf="post.imageUrl">
+        <img [src]="post.imageUrl" alt="{{ post.title }}">
+      </div>
+      <div class="post-content">
+        <h2 class="post-title">{{ post.title }}</h2>
+        <p class="post-author">By {{ post.username }}</p>
+        <p class="post-excerpt">{{ post.content | slice:0:100 }}{{ post.content.length > 100 ? '...' : '' }}</p>
+        <div class="post-footer">
+          <div class="post-stats">
+            <span class="likes" (click)="likePost(post); $event.stopPropagation()">
+              ❤️
+              {{ post.likes || 0 }}
+            </span>
+            <span class="comments">
+              💬
+              {{ post.comments?.length || 0 }}
+            </span>
+          </div>
+          <span class="post-date">{{ post.createdAt | date }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
